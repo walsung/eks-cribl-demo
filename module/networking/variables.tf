@@ -1,7 +1,7 @@
 variable "name" {
   type        = string
   description = "The VPC name"
-  name = "billy-eks-vpc"
+  #name = "billy-eks-vpc"
 }
 
 variable "vpc_cidr_block" {
