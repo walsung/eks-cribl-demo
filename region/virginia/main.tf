@@ -32,7 +32,7 @@ module "ECS" {
 # Create pipeline
 module "Pipeline" {
   source           = "../../module/pipeline"
-  name             = "golang-web"
+  name             = "golang-web-${local.name}"
   image_name       = "golang-web"
   account_id       = local.account_id
   region           = local.region
