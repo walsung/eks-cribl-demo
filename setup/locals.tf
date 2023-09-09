@@ -1,4 +1,4 @@
 locals {
   region = var.region
-  bucketname = "billy"
+  bucketname = var.bucketname
 }
