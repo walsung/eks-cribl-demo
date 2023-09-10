@@ -35,9 +35,9 @@ module "jumpserver" {
   vpc_id             = module.Networking.vpc_id
   instance_type      = local.instance_type
   instance_ami       = local.instance_ami
-  subnet_id          = module.Networking[0][0]
+  subnet_id          = module.Networking.public_subnets_id[0][0]
   security_group_ids = module.Networking.security_group_ids
-  tags               = local.shared_tags
+  #tags               = local.shared_tags
 }
 
 
@@ -53,7 +53,7 @@ module "eks"  {
   max_size           = local.max_size
   min_size           = local.min_size
   security_group_ids = module.Networking.security_group_ids
-  tags               = local.eks_tags
+ # tags               = local.eks_tags
 }
 
 

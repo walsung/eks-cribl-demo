@@ -72,7 +72,7 @@ resource "aws_instance" "jump_server" {
   ami                         = local.instance_ami
   associate_public_ip_address = true
   hibernation                 = false
-  subnet_id                   = local.subnet_id
+  subnet_id                   = var.public_subnets_id[count.index]                      # old value:    local.subnet_id
   vpc_security_group_ids      = setunion([aws_security_group.jump_server.id], local.security_group_ids)
   iam_instance_profile        = aws_iam_instance_profile.jump_server_profile.name
   key_name                    = "jump-server"
@@ -85,7 +85,7 @@ yum install java-1.8.0 -y
 yum install git -y
 
 mkdir -p /usr/local/bin
-curl -o /usr/local/bin/kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.6/2022-03-09/bin/linux/amd64/kubectl
+curl -o /usr/local/bin/kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.4/2023-08-16/bin/darwin/amd64/kubectl
 cd /usr/local/bin/
 chmod a+x kubectl
 
