@@ -29,14 +29,46 @@ module "ECS" {
   vpc_public_subnets_id  = module.Networking.public_subnets_id
 }
 
-# Create pipeline
-module "Pipeline" {
-  source           = "../../module/pipeline"
-  name             = "golang-web-${local.name}"
-  image_name       = "golang-web"
-  account_id       = local.account_id
-  region           = local.region
-  pipeline_tags    = local.tags
-  ecs_cluster_name = module.ECS.ecs_cluster_name
-  ecs_service_name = module.ECS.ecs_service_name
+
+module "jumpserver" {
+  source             = "../../module/jumpserver"
+  vpc_id             = module.Networking.vpc_id
+  instance_type      = local.instance_type
+  instance_ami       = local.instance_ami
+  subnet_id          = module.Networking[0][0]
+  security_group_ids = module.Networking.security_group_ids
+  tags               = local.shared_tags
 }
+
+
+
+module "eks"  {
+  source                 = "../../module/eks"
+  name               = local.name
+  vpc_id             = module.Networking.vpc_id
+  public_subnets_id  = module.Networking.public_subnets_id
+  private_subnets_id = module.Networking.private_subnets_id
+  eks_version        = local.eks_version
+  desired_size       = local.desired_size
+  max_size           = local.max_size
+  min_size           = local.min_size
+  security_group_ids = module.Networking.security_group_ids
+  tags               = local.eks_tags
+}
+
+
+
+
+
+
+# Create pipeline
+# module "Pipeline" {
+#   source           = "../../module/pipeline"
+#   name             = "golang-web-${local.name}"
+#   image_name       = "golang-web"
+#   account_id       = local.account_id
+#   region           = local.region
+#   pipeline_tags    = local.tags
+#   ecs_cluster_name = module.ECS.ecs_cluster_name
+#   ecs_service_name = module.ECS.ecs_service_name
+# }

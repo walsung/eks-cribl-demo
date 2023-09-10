@@ -1,7 +1,7 @@
 variable "name" {
   type        = string
   description = "The EKS name"
-  default = "billy-eks"
+ # default = "billy-eks"
 }
 
 variable "vpc_id" {
@@ -22,7 +22,7 @@ variable "private_subnets_id" {
 variable "eks_version" {
   description = "The EKS's version"
   type        = string
-  default     = "1.27"
+#  default     = "1.27"
 }
 
 variable "desired_size" {
