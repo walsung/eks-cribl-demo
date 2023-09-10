@@ -8,5 +8,6 @@ locals {
   max_size           = var.max_size
   min_size           = var.min_size
   security_group_ids = var.security_group_ids
-  # tags               = var.eks_tags
+  ec2_instance_type  = var.ec2_instance_type
+  tags               = var.eks_tags
 }

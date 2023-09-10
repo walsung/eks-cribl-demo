@@ -1,3 +1,5 @@
+
+
 # Define the security group for jump server.
 resource "aws_security_group" "jump_server" {
   name   = "Security group for jump server"
@@ -65,33 +67,43 @@ resource "aws_iam_instance_profile" "jump_server_profile" {
   }, local.tags)
 }
 
+
+# Define a random shuffle of subnets, convert the subnet list to string
+resource "random_shuffle" "subnets" {
+  input = local.public_subnets_id
+  result_count = 1
+}
+
 # Define the ec2 instance
 resource "aws_instance" "jump_server" {
+  # for_each = local.public_subnets_id
+
   count                       = 1
   instance_type               = local.instance_type
   ami                         = local.instance_ami
   associate_public_ip_address = true
   hibernation                 = false
   #subnet_id                   = var.public_subnets_id[count.index]                      # old value:    local.subnet_id
-  subnet_id                   = local.public_subnets_id
+  #subnet_id                   = local.public_subnets_id
+  subnet_id = random_shuffle.subnets.result[0]
   vpc_security_group_ids      = setunion([aws_security_group.jump_server.id], local.security_group_ids)
   iam_instance_profile        = aws_iam_instance_profile.jump_server_profile.name
   key_name                    = "jump-server"
-  user_data                   = <<EOF
-#!/bin/bash
-mkdir -p /usr/local
-cd /usr/local
-yum install update -y
-yum install java-1.8.0 -y
-yum install git -y
+  user_data                   = <<-EOF
+              #!/bin/bash
+              mkdir -p /usr/local
+              cd /usr/local
+              yum install update -y
+              yum install java-1.8.0 -y
+              yum install git -y
 
-mkdir -p /usr/local/bin
-curl -o /usr/local/bin/kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.4/2023-08-16/bin/darwin/amd64/kubectl
-cd /usr/local/bin/
-chmod a+x kubectl
+              mkdir -p /usr/local/bin
+              curl -o /usr/local/bin/kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.4/2023-08-16/bin/darwin/amd64/kubectl
+              cd /usr/local/bin/
+              chmod a+x kubectl
 
-echo "export PATH=$PATH:/bin:/sbin:/usr/local/bin" >> /etc/bashrc
-  EOF
+              echo "export PATH=$PATH:/bin:/sbin:/usr/local/bin" >> /etc/bashrc
+              EOF
   tags                        = merge({
     Name = "Jumper Server"
   }, local.tags)

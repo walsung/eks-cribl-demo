@@ -10,7 +10,7 @@ output "private_subnets_id" {
   value = [aws_subnet.private_subnet.*.id]
 }
 
-output "security_groups_ids" {
+output "security_group_ids" {
   value = [aws_security_group.security_group.id]
 }
 
