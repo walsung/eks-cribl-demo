@@ -72,7 +72,8 @@ resource "aws_instance" "jump_server" {
   ami                         = local.instance_ami
   associate_public_ip_address = true
   hibernation                 = false
-  subnet_id                   = var.public_subnets_id[count.index]                      # old value:    local.subnet_id
+  #subnet_id                   = var.public_subnets_id[count.index]                      # old value:    local.subnet_id
+  subnet_id                   = local.public_subnets_id
   vpc_security_group_ids      = setunion([aws_security_group.jump_server.id], local.security_group_ids)
   iam_instance_profile        = aws_iam_instance_profile.jump_server_profile.name
   key_name                    = "jump-server"
