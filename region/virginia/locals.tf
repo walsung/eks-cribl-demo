@@ -20,11 +20,11 @@ locals {
   #tags               = local.eks_tags
 
   ## module helm cribl
-  chart      = "cribl/logstream-leader"
-  chartname   = "logstream-leader"
-  namespace  = "cribl-dev"
+  chart        = "cribl/logstream-leader"
+  chartname    = "logstream-leader"
+  namespace    = "cribl-dev"
   chartversion = "4.2.1"
-  repository = "https://criblio.github.io/helm-charts"
+  repository   = "https://criblio.github.io/helm-charts"
   config_token = "ABCDEF01-1234-5678-ABCD-ABCDEF012345"
 
   tags = {
