@@ -30,7 +30,7 @@ module "ECS" {
 }
 
 
-module "eks"  {
+module "EKS"  {
   source             = "../../module/eks"
   name               = local.name
   vpc_id             = module.Networking.vpc_id
@@ -46,12 +46,27 @@ module "eks"  {
 }
 
 
+module "helmcribl" {
+  source             = "../../module/helm-cribl"
+  eks_cluster_endpoint = module.EKS.eks_cluster_endpoint
+  eks_certificate_authority_data = module.EKS.eks_certificate_authority_data
+  eks_cluster_name = module.EKS.eks_cluster_name
+  chart      = local.chart
+  chartname   = local.chartname
+  namespace  = local.namespace
+  chartversion = local.chartversion
+  repository = local.repository
+  config_token = local.config_token
+  depends_on = [ module.EKS ]
+}
+
 module "jumpserver" {
   source             = "../../module/jumpserver"
   vpc_id             = module.Networking.vpc_id
   instance_type      = local.instance_type
   instance_ami       = local.instance_ami
-  public_subnets_id  = keys(module.Networking.public_subnets_id)
+  # public_subnets_id  = keys(module.Networking.public_subnets_id)
+  public_subnets_id  = module.Networking.public_subnets_id
   security_group_ids = module.Networking.security_group_ids
   #tags               = local.shared_tags
   depends_on = [ module.Networking ]

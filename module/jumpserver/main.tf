@@ -70,7 +70,7 @@ resource "aws_iam_instance_profile" "jump_server_profile" {
 
 # Define a random shuffle of subnets, convert the subnet list to string
 resource "random_shuffle" "subnets" {
-  input = local.public_subnets_id
+  input = flatten(local.public_subnets_id)
   result_count = 2
 }
 
