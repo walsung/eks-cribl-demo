@@ -7,7 +7,6 @@ locals {
   ## jumphost
   instance_type = "t2.micro"
   instance_ami  = "ami-01c647eace872fc02"
-  #  public_subnets_id          = module.Networking.public_subnets_id[0][0]
   shared_tags = {
     "Name" : "billy-eks"
   }
