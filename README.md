@@ -8,7 +8,9 @@ Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with m5a.
 
 ## Original Design
 
-
+- all input variables are declared under folder region/xxxx/locals.tf and partially in main.tf for the module outputs
+- create VPC
+- create EKS and nodes
 - eks cluster role has these permissions
 
 CloudWatchFullAccess
@@ -27,6 +29,22 @@ AmazonEC2RoleforSSM
 AmazonEC2FullAccess
 AmazonEC2ContainerRegistryReadOnly
 AmazonSSMFullAccess
+
+- Helm connects to EKS with certificate authority
+
+```
+provider "helm" {
+  kubernetes {  
+    host                   = local.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(local.eks_certificate_authority_data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", local.eks_cluster_name]
+      command     = "aws"
+    }
+  }
+}
+```
 
 
 - Cribl logstream leader helm setup is the declarative command for the imperative command `helm --create-namespace -n "cribl" install logstream-leader cribl/logstream-leader --set config.adminPassword="criblleader" --set "config.groups={group1,group2}" --set config.token="ABCDEF01-1234-5678-ABCD-ABCDEF012345" --set config.host="localhost"`
