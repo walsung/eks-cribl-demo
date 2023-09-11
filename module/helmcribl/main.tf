@@ -33,6 +33,13 @@ resource "helm_release" "logstream-leader" {
     name  = "config.adminPassword"
     value = "criblleader"
   }
-
+  
+  timeouts {
+    create = "10m"
+    update = "10m"
+    delete = "20m"
+  }
+  
   # depends_on = [kubernetes_namespace.app_namespace]
+
 }

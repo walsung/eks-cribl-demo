@@ -1,7 +1,8 @@
 ## about DEMO
 
 This demo is to build an AWS EKS and then joins the helm chart kube-config setting to EKS, finally install cribl leader via Helm Chart.
-Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with c7g.4xlarge ec2 instance. 
+Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with m5a.4xlarge ec2 instance. 
+
 ![Screenshot](screenshots/20230911145215.png)
 
 

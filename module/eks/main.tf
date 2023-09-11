@@ -84,7 +84,11 @@ resource "aws_eks_cluster" "eks" {
   ]
   role_arn = aws_iam_role.eks_role.arn
 
-  timeouts {}
+  timeouts {
+    create = "10m"
+    update = "10m"
+    delete = "20m"
+  }
 
   vpc_config {
     endpoint_private_access = true
