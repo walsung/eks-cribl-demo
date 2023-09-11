@@ -3,10 +3,10 @@ resource "kubernetes_storage_class" "ebs-sc" {
     name = "ebs-sc"
   }
 
-  storage_provisioner = "kubernetes.io/aws-ebs"   # original value "kubernetes.io/aws-ebs"
+  storage_provisioner = "ebs.csi.aws.com"   # original value "kubernetes.io/aws-ebs"
 
   parameters = {
-    type = "gp2"           # original value gp2
+    type = "gp3"           # original value gp2
   }
 
   reclaim_policy = "Retain"
