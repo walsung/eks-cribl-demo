@@ -9,27 +9,30 @@ Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with m5a.
 ## Original Design
 
 
-- eks role and nodegroup_role have these permissions
-- Cribl logstream leader helm setup is the declarative command for the imperative command `helm --create-namespace -n "cribl" install logstream-leader cribl/logstream-leader --set config.adminPassword="criblleader" --set "config.groups={group1,group2}" --set config.token="ABCDEF01-1234-5678-ABCD-ABCDEF012345" --set config.host="localhost"`
-- jumphost can be either built on EC2 or ECS, but both are **incomplete**
-	
-AmazonEC2FullAccess
-	
-AmazonEKS_CNI_Policy
-	
+- eks cluster role has these permissions
+
+CloudWatchFullAccess
 AmazonEKSClusterPolicy
-	
-AmazonEKSFargatePodExecutionRolePolicy
-	
-AmazonEKSLocalOutpostClusterPolicy
-	
-AmazonEKSServicePolicy
-	
 AmazonEKSVPCResourceController
-	
+AmazonEC2ContainerRegistryReadOnly
 AmazonEKSWorkerNodePolicy
+
+- node group role have these permissions
+
+CloudWatchFullAccess
+AmazonEKSWorkerNodePolicy
+AmazonEKS_CNI_Policy
+CloudWatchAgentServerPolicy
+AmazonEC2RoleforSSM
+AmazonEC2FullAccess
+AmazonEC2ContainerRegistryReadOnly
+AmazonSSMFullAccess
+
+
+- Cribl logstream leader helm setup is the declarative command for the imperative command `helm --create-namespace -n "cribl" install logstream-leader cribl/logstream-leader --set config.adminPassword="criblleader" --set "config.groups={group1,group2}" --set config.token="ABCDEF01-1234-5678-ABCD-ABCDEF012345" --set config.host="localhost"`
+
+- (**incomplete**) For security purpose, it's recommended to access EKS kubectl through a bastion. Jumphost can be either built on EC2 or ECS
 	
-AWSFaultInjectionSimulatorEKSAccess
 
 
 
@@ -75,11 +78,11 @@ folder tree
 
 ## Prerequisites
 
-+ Create an [aws account](https://aws.amazon.com/) with the IAM `AdministratorAccess` permission
++ Create an aws account with the IAM `AdministratorAccess` permission
 
 + Configure Access Key and Secret Access Key
 
-**NOTE**: You **MUST** use the Access Key and Secret Access Key of user that created EKS
+**NOTE**: **MUST** use the Access Key and Secret Access Key of user that created EKS
 
 ```shell
 $ aws configure
@@ -177,7 +180,7 @@ terraform apply           several times to get it working
 + Update or create kubeconfig in AWS CloudShell
 
 ```shell
-$ aws eks --region region-code update-kubeconfig --name cluster_name
+aws eks --region region-code update-kubeconfig --name cluster_name
 ```
 `region-code` is aws region code, such as `us-east-1`
 
@@ -186,12 +189,10 @@ $ aws eks --region region-code update-kubeconfig --name cluster_name
 + Access EKS cluster
 
 ```shell
-$ kubectl get svc
-NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
-kubernetes   ClusterIP   172.20.0.1   <none>        443/TCP   2d2h
+kubectl -n cribl-dev get svc
 ```
 
-+ see the cribl logstream leader is running
+see the cribl logstream leader is running
 External kubernetes LoadBalancer port and URL addresses are shown
 
 
