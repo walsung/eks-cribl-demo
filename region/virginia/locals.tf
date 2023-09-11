@@ -5,11 +5,11 @@ locals {
   availability_zones = ["${local.region}a", "${local.region}b", "${local.region}c"]
 
   ## module jumphost
-  instance_type = "t2.micro"
-  instance_ami  = "ami-01c647eace872fc02"
-  shared_tags = {
-    "Name" : "billy-eks"
-  }
+  # instance_type = "t2.micro"
+  # instance_ami  = "ami-01c647eace872fc02"
+  # shared_tags = {
+  #   "Name" : "billy-eks"
+  # }
 
   ## module eks
   eks_version       = "1.27"
@@ -20,7 +20,7 @@ locals {
   #tags               = local.eks_tags
 
   ## module helm cribl
-  chart        = "logstream-leader"             ## actually it's   cribl/logstream-leader, in terraform, need to chop off the cribl/
+  chart        = "logstream-leader"             ## actually in helm repo it's cribl/logstream-leader, in terraform, need to chop off the cribl/
   chartname    = "logstream-leader"
   namespace    = "cribl-dev"
   chartversion = "4.2.2"

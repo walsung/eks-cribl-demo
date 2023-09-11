@@ -75,14 +75,3 @@ module "helmcribl" {
 
 
 
-# Create pipeline
-# module "Pipeline" {
-#   source           = "../../module/pipeline"
-#   name             = "golang-web-${local.name}"
-#   image_name       = "golang-web"
-#   account_id       = local.account_id
-#   region           = local.region
-#   pipeline_tags    = local.tags
-#   ecs_cluster_name = module.ECS.ecs_cluster_name
-#   ecs_service_name = module.ECS.ecs_service_name
-# }

@@ -46,4 +46,5 @@ variable "repository" {
 variable "config_token" {
   description = "Configuration token that bootstraps cribl leader to cribl workers"
   type        = string
+  sensitive = true
 }
