@@ -31,6 +31,7 @@ AmazonEC2RoleforSSM
 AmazonEC2FullAccess
 AmazonEC2ContainerRegistryReadOnly
 AmazonSSMFullAccess
+AmazonEBSCSIDriverPolicy
 
 - enable EKS control plane logs like these, viewable from cloudwatch loggroup
 

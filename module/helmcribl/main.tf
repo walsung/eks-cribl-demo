@@ -26,7 +26,7 @@ resource "helm_release" "logstream-leader" {
   namespace  = local.namespace
   version    = local.chartversion
   create_namespace = true
-  timeout = 3600
+  timeout = 1200
   cleanup_on_fail = true
 
   ## cribl logstream-leader
