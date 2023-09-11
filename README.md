@@ -2,7 +2,7 @@
 
 This demo is to build an AWS EKS and then joins the helm chart kube-config setting to EKS, finally install cribl leader via Helm Chart.
 Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with c7g.4xlarge ec2 instance. 
-![[Pasted image 20230911145215.png]]
+![Screenshot](screenshots/20230911145215.png)
 
 
 ## Original Design
@@ -32,7 +32,7 @@ AWSFaultInjectionSimulatorEKSAccess
 
 
 
-![[Pasted image 20230911175828.png]]
+![Screenshot](screenshots/20230911175828.png)
 
 
 folder tree
@@ -165,7 +165,7 @@ terraform apply -target=module.helmcribl
 
 occasionally error, try re-running with terraform plan
 terraform apply           several times to get it working
-![[Pasted image 20230911165407.png]]
+![Screenshot](screenshots/20230911165407.png)
 
 
 
@@ -195,7 +195,7 @@ kubernetes   ClusterIP   172.20.0.1   <none>        443/TCP   2d2h
 
 + cloudwatch loggrup is capturing the billy-eks cluster audit log
 
-![[Pasted image 20230911145954.png]]
+![Screenshot](screenshots/20230911145954.png)
 
 
 ## Uninstall
