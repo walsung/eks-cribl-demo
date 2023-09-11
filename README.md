@@ -1,7 +1,7 @@
 ## about DEMO
 
 This demo is to build an AWS EKS and then joins the helm chart kube-config setting to EKS, finally install cribl leader via Helm Chart.
-Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with m5a.4xlarge ec2 instance. 
+
 
 ![Screenshot](screenshots/20230911145215.png)
 
@@ -10,7 +10,7 @@ Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with m5a.
 
 - all input variables are declared under folder region/xxxx/locals.tf and partially in main.tf for the module outputs
 - create VPC
-- create EKS and nodes
+- create EKS and nodes. Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with m5a.4xlarge (USD$0.688 per hour, AL2_x86_64 type, 16 vcpu, 64GiB, EBS-only, up to 10 Gigabit). 
 - eks cluster role has these permissions
 
 CloudWatchFullAccess
@@ -46,14 +46,14 @@ provider "helm" {
 }
 ```
 
-- Helm chart takes extremely long time to create, therefore needs to set 2 conditions to prevent creation timeout, and to delete the deployment when fail to create
+- Helm chart takes extremely long time to create, therefore needs to set two conditions to prevent creation timeout, and to delete the deployment when fail to create
 
 ```
 resource "helm_release" "logstream-leader" {
   (....snippet...)
 
-  timeout = 3600
-  cleanup_on_fail = true
+  timeout = 3600            # 1 hour = 3600 seconds
+  cleanup_on_fail = true    # to delete the deployment when fail to create
 
   (....snippet...)
 }
@@ -111,9 +111,7 @@ folder tree
 
 + Create an aws account with the IAM `AdministratorAccess` permission
 
-+ Configure Access Key and Secret Access Key
-
-**NOTE**: **MUST** use the Access Key and Secret Access Key of user that created EKS
++ **NOTE**: **MUST** configure the Access Key and Secret Access Key of user that created EKS
 
 ```shell
 $ aws configure
@@ -229,10 +227,46 @@ External kubernetes LoadBalancer port and URL addresses are shown
 
 ![Screenshot](screenshots/20230911142521.png)
 
++ PVC pending for creation
+
+PVC may not be created correctly due to ebs.csi.aws.com isn't installed
+
+```
+kubectl get pvc
+
+VolumeMode:    Filesystem
+Used By:       logstream-leader-84d789b5d-bbms8
+Events:
+  Type    Reason                Age                 From                         Message
+  ----    ------                ----                ----                         -------
+  Normal  WaitForFirstConsumer  20m                 persistentvolume-controller  waiting for first consumer to be created before binding
+  Normal  ExternalProvisioning  31s (x82 over 20m)  persistentvolume-controller  waiting for a volume to be created, either by external provisioner "ebs.csi.aws.com" or manually created by system administrator
+```
+
+To resolve it, in EKS cloudshell, create aws ebs storage class
+
+```
+k apply -f - <<EOF
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-sc
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+EOF
+```
+
+re-run terraform plan
+terraform apply    again
 
 + cloudwatch loggroup is capturing the billy-eks cluster audit log
 
 ![Screenshot](screenshots/20230911145954.png)
+
+
 
 
 ## Uninstall
