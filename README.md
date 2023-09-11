@@ -3,10 +3,12 @@
 This demo is to build an AWS EKS and then joins the helm chart kube-config setting to EKS, finally install cribl leader via Helm Chart.
 
 
-![Screenshot](screenshots/20230911145215.png)
 
 
 ## Design
+
+![Screenshot](screenshots/20230911175828.png)
+
 
 - all input variables are declared under folder region/xxxx/locals.tf and partially in main.tf for the module outputs
 - create VPC, subnets, ENI etc
@@ -79,7 +81,6 @@ resource "helm_release" "logstream-leader" {
 
 
 
-![Screenshot](screenshots/20230911175828.png)
 
 
 folder tree
@@ -238,9 +239,6 @@ External kubernetes LoadBalancer port and URL addresses are shown
 
 
 ![Screenshot](screenshots/20230911142521.png)
-
-+ PVC pending for creation
-
 
 
 + cloudwatch loggroup is capturing the billy-eks cluster audit log
