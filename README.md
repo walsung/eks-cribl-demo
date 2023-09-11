@@ -162,6 +162,7 @@ It may show up error that module.helmcribl will be provisioned before EKS creati
 
 
 terraform plan -target=module.helmcribl
+
 terraform apply -target=module.helmcribl
 
 occasionally error, try re-running with terraform plan
