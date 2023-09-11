@@ -29,6 +29,10 @@ resource "helm_release" "logstream-leader" {
   timeout = 1200
   cleanup_on_fail = true
 
+  lifecycle {
+    create_before_destroy = false
+  }
+
   ## cribl logstream-leader
   set {
     name  = "config.groups"

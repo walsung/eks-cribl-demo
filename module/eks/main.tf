@@ -174,7 +174,7 @@ resource "aws_iam_role_policy_attachment" "node_group__AmazonSSMFullAccess" {
 }
 
 resource "aws_iam_role_policy_attachment" "node_group__AmazonEBSCSIDriverPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEBSCSIDriverPolicy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
   role       = aws_iam_role.node_group_role.name
 }
 

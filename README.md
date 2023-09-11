@@ -27,11 +27,11 @@ CloudWatchFullAccess
 AmazonEKSWorkerNodePolicy
 AmazonEKS_CNI_Policy
 CloudWatchAgentServerPolicy
-AmazonEC2RoleforSSM
+AmazonEC2RoleforSSM (service-role)
 AmazonEC2FullAccess
 AmazonEC2ContainerRegistryReadOnly
 AmazonSSMFullAccess
-AmazonEBSCSIDriverPolicy
+AmazonEBSCSIDriverPolicy (service-role)
 
 - enable EKS control plane logs like these, viewable from cloudwatch loggroup
 
