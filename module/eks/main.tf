@@ -85,7 +85,7 @@ resource "aws_eks_cluster" "eks" {
   role_arn = aws_iam_role.eks_role.arn
 
   timeouts {
-    create = "10m"
+    create = "20m"
     update = "10m"
     delete = "20m"
   }
@@ -199,9 +199,9 @@ resource "aws_eks_node_group" "node_group" {
   }
 
   timeouts {
-    create = "10m"
+    create = "20m"
     update = "10m"
-    delete = "15m"
+    delete = "20m"
   }
 
   lifecycle {
