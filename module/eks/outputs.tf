@@ -7,9 +7,9 @@ output "kubeconfig-certificate-authority-data" {
 }
 
 output "cluster_id" {
-  value = aws_eks_cluster.cluster_id
+  value = aws_eks_cluster.eks.cluster_id
 }
 
-output "cluster-endpoint" {
-  value = aws_eks_cluster.cluster.endpoint
+output "cluster_name" {
+  value = aws_eks_cluster.eks.id
 }

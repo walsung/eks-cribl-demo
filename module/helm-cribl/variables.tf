@@ -1,7 +1,7 @@
-variable "kube_config" {
-  description = "Path to the kubeconfig file"
-  type        = string
-}
+# variable "kube_config" {
+#   description = "Path to the kubeconfig file"
+#   type        = string
+# }
 
 variable "eks_cluster_endpoint" {
   description = "Endpoint URL of the EKS cluster"

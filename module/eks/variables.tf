@@ -58,5 +58,5 @@ variable "eks_tags" {
 variable "ec2_instance_type" {
   description = "The ec2 instance type added to EKS"
   type = string
-  default = "t3a.xlarge"
+  # default = "t3a.xlarge"
 }

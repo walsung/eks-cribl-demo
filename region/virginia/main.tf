@@ -41,6 +41,7 @@ module "EKS" {
   max_size           = local.max_size
   min_size           = local.min_size
   security_group_ids = module.Networking.security_group_ids
+  ec2_instance_type  = local.ec2_instance_type
   # tags               = local.eks_tags
   depends_on = [module.Networking]
 }
@@ -48,16 +49,15 @@ module "EKS" {
 
 module "helmcribl" {
   source                         = "../../module/helm-cribl"
-  eks_cluster_endpoint           = module.EKS.eks_cluster_endpoint
-  eks_certificate_authority_data = module.EKS.eks_certificate_authority_data
-  eks_cluster_name               = module.EKS.eks_cluster_name
+  eks_cluster_endpoint           = module.EKS.endpoint
+  eks_certificate_authority_data = module.EKS.kubeconfig-certificate-authority-data
+  eks_cluster_name               = module.EKS.cluster_name
   chart                          = local.chart
   chartname                      = local.chartname
   namespace                      = local.namespace
   chartversion                   = local.chartversion
   repository                     = local.repository
   config_token                   = local.config_token
-  depends_on                     = [module.EKS]
 }
 
 module "jumpserver" {
