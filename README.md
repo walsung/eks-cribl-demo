@@ -6,10 +6,10 @@ This demo is to build an AWS EKS and then joins the helm chart kube-config setti
 ![Screenshot](screenshots/20230911145215.png)
 
 
-## Original Design
+## Design
 
 - all input variables are declared under folder region/xxxx/locals.tf and partially in main.tf for the module outputs
-- create VPC
+- create VPC, subnets, ENI etc
 - create EKS and nodes. Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with m5a.4xlarge (USD$0.688 per hour, AL2_x86_64 type, 16 vcpu, 64GiB, EBS-only, up to 10 Gigabit). 
 - eks cluster role has these permissions
 
@@ -30,6 +30,17 @@ AmazonEC2FullAccess
 AmazonEC2ContainerRegistryReadOnly
 AmazonSSMFullAccess
 
+- enable EKS control plane logs like these, viewable from cloudwatch loggroup
+
+```
+  enabled_cluster_log_types = [
+    "api",
+    "audit",
+    "authenticator",
+    "controllerManager",
+    "scheduler"
+  ]
+```
 - Helm connects to EKS with certificate authority
 
 ```
@@ -276,7 +287,20 @@ run
 terraform destroy --auto-approve
 ```
 
+Kubectl Namespace can be timeout when destroying via Terraform, it can be manually go into AWS console > AWS Cloudshell to perform `kubectl delete ns cribl-dev` to erase the entire namespace, and then re-running terraform plan again.
 
-If some resources can't be destroyed, like EKS cluster, eks-role, just delete them manually from AWS console > EKS and IAM role
+If some resources can't be destroyed, like kubectl namespace, EKS cluster, eks-role, just delete them manually from AWS console > EKS and IAM role
 
 And then go to s3 bucket to delete the tfstate file before getting stucked at re-running "terraform plan" again.
+
+
+
+## External References
+
+  enabled_cluster_log_types = [
+    "api",
+    "audit",
+    "authenticator",
+    "controllerManager",
+    "scheduler"
+  ]

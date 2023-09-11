@@ -1,4 +1,17 @@
+resource "kubernetes_storage_class" "ebs-sc" {
+  metadata {
+    name = "ebs-sc"
+  }
 
+  storage_provisioner = "kubernetes.io/aws-ebs"
+
+  parameters = {
+    type = "gp2"
+  }
+
+  reclaim_policy = "Retain"
+  volume_binding_mode = "WaitForFirstConsumer"
+}
 
 resource "kubernetes_namespace" "app_namespace" {
   metadata {
@@ -12,7 +25,7 @@ resource "helm_release" "logstream-leader" {
   repository = local.repository
   namespace  = local.namespace
   version    = local.chartversion
-
+  create_namespace = true
   timeout = 3600
   cleanup_on_fail = true
 
