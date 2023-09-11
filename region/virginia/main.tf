@@ -58,6 +58,7 @@ module "helmcribl" {
   chartversion                   = local.chartversion
   repository                     = local.repository
   config_token                   = local.config_token
+  depends_on = [module.EKS]
 }
 
 # module "jumpserver" {
