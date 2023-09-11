@@ -1,6 +1,6 @@
 
 
-resource "kubernetes_namespace" "cribl-dev" {
+resource "kubernetes_namespace" "app-namespace" {
   metadata {
     name = local.namespace
   }
@@ -13,6 +13,7 @@ resource "helm_release" "logstream-leader" {
   namespace  = local.namespace
   version    = local.chartversion
 
+  ## cribl logstream-leader
   set {
     name  = "config.groups"
     value = "{group1,group2}"
@@ -28,4 +29,22 @@ resource "helm_release" "logstream-leader" {
     value = "logstream-leader-internal"
   }
 
+  ## redis
+  #   set {
+  #   name  = "cluster.enabled"
+  #   value = "true"
+  # }
+
+  # set {
+  #   name  = "metrics.enabled"
+  #   value = "true"
+  # }
+
+  # set {
+  #   name  = "service.annotations.prometheus\\.io/port"
+  #   value = "9127"
+  #   type  = "string"
+  # }
+
+  depends_on = [kubernetes_namespace.app-namespace]
 }

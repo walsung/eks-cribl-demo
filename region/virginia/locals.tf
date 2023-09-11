@@ -16,11 +16,11 @@ locals {
   desired_size      = 2
   max_size          = 2
   min_size          = 2
-  ec2_instance_type = "t3.medium"
+  ec2_instance_type = "c7g.4xlarge"    # normal t3.micro, but for cribl, needs at least c7g.4xlarge
   #tags               = local.eks_tags
 
   ## module helm cribl
-  chart        = "cribl/logstream-leader"
+  chart        = "logstream-leader"             ## actually it's   cribl/logstream-leader, in terraform, need to chop off the cribl/
   chartname    = "logstream-leader"
   namespace    = "cribl-dev"
   chartversion = "4.2.2"

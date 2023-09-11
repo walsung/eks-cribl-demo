@@ -13,21 +13,21 @@ module "Networking" {
 }
 
 # Create ECS for demo
-module "ECS" {
-  source                 = "../../module/ecs"
-  vpc_id                 = module.Networking.vpc_id
-  account_id             = local.account_id
-  ecs_cluster_name       = "ecs-cluster"
-  ecs_service_name       = "billy-test-cribl"
-  cpu                    = 256
-  memory                 = 512
-  max_capacity           = 8
-  project_name           = "billy-test-cribl"
-  image_name             = "billy-test-cribl"
-  region                 = local.region
-  vpc_private_subnets_id = module.Networking.private_subnets_id
-  vpc_public_subnets_id  = module.Networking.public_subnets_id
-}
+# module "ECS" {
+#   source                 = "../../module/ecs"
+#   vpc_id                 = module.Networking.vpc_id
+#   account_id             = local.account_id
+#   ecs_cluster_name       = "ecs-cluster"
+#   ecs_service_name       = "billy-test-cribl"
+#   cpu                    = 256
+#   memory                 = 512
+#   max_capacity           = 8
+#   project_name           = "billy-test-cribl"
+#   image_name             = "billy-test-cribl"
+#   region                 = local.region
+#   vpc_private_subnets_id = module.Networking.private_subnets_id
+#   vpc_public_subnets_id  = module.Networking.public_subnets_id
+# }
 
 
 module "EKS" {
@@ -48,7 +48,7 @@ module "EKS" {
 
 
 module "helmcribl" {
-  source                         = "../../module/helm-cribl"
+  source                         = "../../module/helmcribl"
   eks_cluster_endpoint           = module.EKS.endpoint
   eks_certificate_authority_data = module.EKS.kubeconfig-certificate-authority-data
   eks_cluster_name               = module.EKS.cluster_name
@@ -60,17 +60,17 @@ module "helmcribl" {
   config_token                   = local.config_token
 }
 
-module "jumpserver" {
-  source        = "../../module/jumpserver"
-  vpc_id        = module.Networking.vpc_id
-  instance_type = local.instance_type
-  instance_ami  = local.instance_ami
-  # public_subnets_id  = keys(module.Networking.public_subnets_id)
-  public_subnets_id  = module.Networking.public_subnets_id
-  security_group_ids = module.Networking.security_group_ids
-  #tags               = local.shared_tags
-  depends_on = [module.Networking]
-}
+# module "jumpserver" {
+#   source        = "../../module/jumpserver"
+#   vpc_id        = module.Networking.vpc_id
+#   instance_type = local.instance_type
+#   instance_ami  = local.instance_ami
+#   # public_subnets_id  = keys(module.Networking.public_subnets_id)
+#   public_subnets_id  = module.Networking.public_subnets_id
+#   security_group_ids = module.Networking.security_group_ids
+#   #tags               = local.shared_tags
+#   depends_on = [module.Networking]
+# }
 
 
 

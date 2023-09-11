@@ -206,4 +206,6 @@ resource "aws_eks_node_group" "node_group" {
     "eks/nodegroup-name" = format("%s Node Group", aws_eks_cluster.eks.name)
     "eks/nodegroup-type" = "managed"
   }, local.tags)
+
+  depends_on = [aws_eks_cluster.eks]
 }
