@@ -13,6 +13,9 @@ resource "helm_release" "logstream-leader" {
   namespace  = local.namespace
   version    = local.chartversion
 
+  timeout = 3600
+  cleanup_on_fail = true
+
   ## cribl logstream-leader
   set {
     name  = "config.groups"

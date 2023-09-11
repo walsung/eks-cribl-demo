@@ -46,8 +46,21 @@ provider "helm" {
 }
 ```
 
+- Helm chart takes extremely long time to create, therefore needs to set 2 conditions to prevent creation timeout, and to delete the deployment when fail to create
 
-- Cribl logstream leader helm setup is the declarative command for the imperative command `helm --create-namespace -n "cribl" install logstream-leader cribl/logstream-leader --set config.adminPassword="criblleader" --set "config.groups={group1,group2}" --set config.token="ABCDEF01-1234-5678-ABCD-ABCDEF012345" --set config.host="localhost"`
+```
+resource "helm_release" "logstream-leader" {
+  (....snippet...)
+
+  timeout = 3600
+  cleanup_on_fail = true
+
+  (....snippet...)
+}
+```
+
+
+- Cribl logstream leader helm setup is the declarative command for the imperative command `helm --create-namespace -n "cribl" install logstream-leader cribl/logstream-leader --set config.adminPassword="criblleader" --set "config.groups={group1,group2}" --set config.token="ABCDEF01-1234-5678-ABCD-ABCDEF012345" --set config.host="logstream-leader"`
 
 - (**incomplete**) For security purpose, it's recommended to access EKS kubectl through a bastion. Jumphost can be either built on EC2 or ECS
 	
