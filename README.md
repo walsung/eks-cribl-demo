@@ -44,6 +44,24 @@ AmazonSSMFullAccess
   ]
 ```
 - Persistent storage in EKS failing to provision volume for EBS-only node instances. Add kubernetes storageclass aws-ebs in module.helmcribl
+
+```
+resource "kubernetes_storage_class" "ebs-sc" {
+  metadata {
+    name = "ebs-sc"
+  }
+
+  storage_provisioner = "kubernetes.io/aws-ebs"
+
+  parameters = {
+    type = "gp2"
+  }
+
+  reclaim_policy = "Retain"
+  volume_binding_mode = "WaitForFirstConsumer"
+}
+```
+
 - Helm connects to EKS with certificate authority
 
 ```
@@ -275,11 +293,3 @@ And then go to s3 bucket to delete the tfstate file before getting stucked at re
 
 
 
-
-  enabled_cluster_log_types = [
-    "api",
-    "audit",
-    "authenticator",
-    "controllerManager",
-    "scheduler"
-  ]
