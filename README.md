@@ -44,7 +44,8 @@ AmazonEBSCSIDriverPolicy (service-role)
     "scheduler"
   ]
 ```
-- Persistent storage in EKS failing to provision volume for EBS-only node instances. Add kubernetes storageclass aws-ebs in module.helmcribl
+- Persistent storage in EKS failing to provision volume for EBS-only node instances. Add kubernetes storageclass aws-ebs csi driver in module.helmcribl
+  can be validated with `kubectl get deployment -n kube-system` command to see if ebs-csi-controller is in ready state.
 
 ```
 resource "kubernetes_storage_class" "ebs-sc" {
@@ -52,10 +53,10 @@ resource "kubernetes_storage_class" "ebs-sc" {
     name = "ebs-sc"
   }
 
-  storage_provisioner = "kubernetes.io/aws-ebs"
+  storage_provisioner = "ebs.csi.aws.com"
 
   parameters = {
-    type = "gp2"
+    type = "gp3"
   }
 
   reclaim_policy = "Retain"
