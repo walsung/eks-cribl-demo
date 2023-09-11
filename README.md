@@ -41,6 +41,7 @@ AmazonSSMFullAccess
     "scheduler"
   ]
 ```
+- Persistent storage in EKS failing to provision volume for EBS-only node instances. Add kubernetes storageclass aws-ebs in module.helmcribl
 - Helm connects to EKS with certificate authority
 
 ```
@@ -240,38 +241,7 @@ External kubernetes LoadBalancer port and URL addresses are shown
 
 + PVC pending for creation
 
-PVC may not be created correctly due to ebs.csi.aws.com isn't installed
 
-```
-kubectl get pvc
-
-VolumeMode:    Filesystem
-Used By:       logstream-leader-84d789b5d-bbms8
-Events:
-  Type    Reason                Age                 From                         Message
-  ----    ------                ----                ----                         -------
-  Normal  WaitForFirstConsumer  20m                 persistentvolume-controller  waiting for first consumer to be created before binding
-  Normal  ExternalProvisioning  31s (x82 over 20m)  persistentvolume-controller  waiting for a volume to be created, either by external provisioner "ebs.csi.aws.com" or manually created by system administrator
-```
-
-To resolve it, in EKS cloudshell, create aws ebs storage class
-
-```
-k apply -f - <<EOF
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: ebs-sc
-provisioner: kubernetes.io/aws-ebs
-parameters:
-  type: gp2
-reclaimPolicy: Retain
-volumeBindingMode: WaitForFirstConsumer
-EOF
-```
-
-re-run terraform plan
-terraform apply    again
 
 + cloudwatch loggroup is capturing the billy-eks cluster audit log
 
@@ -296,6 +266,17 @@ And then go to s3 bucket to delete the tfstate file before getting stucked at re
 
 
 ## External References
+
+[Terraform helm](https://registry.terraform.io/modules/terraform-module/release/helm/latest)
+
+[terraform-aws-modules/eks/aws | Terraform Registry](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest)
+
+[How to build EKS with Terraform - DEV Community](https://dev.to/aws-builders/how-to-build-eks-with-terraform-54pl)
+
+[Persistent storage in eks failing to provisioning volume](https://stackoverflow.com/questions/69290796/persistent-storage-in-eks-failing-to-provision-volume)
+
+
+
 
   enabled_cluster_log_types = [
     "api",
