@@ -8,10 +8,10 @@ Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with m5a.
 
 ## Original Design
 
-- jumphost can be either built on EC2 or ECS, but both are **incomplete**
+
 - eks role and nodegroup_role have these permissions
 - Cribl logstream leader helm setup is the declarative command for the imperative command `helm --create-namespace -n "cribl" install logstream-leader cribl/logstream-leader --set config.adminPassword="criblleader" --set "config.groups={group1,group2}" --set config.token="ABCDEF01-1234-5678-ABCD-ABCDEF012345" --set config.host="localhost"`
-
+- jumphost can be either built on EC2 or ECS, but both are **incomplete**
 	
 AmazonEC2FullAccess
 	
@@ -122,7 +122,7 @@ s3_bucket_terraform_state = "**********-us-east-1"
 
 ### Build resources
 
-Now, we begin to build the resources including VPC, subnets, EKS, helm cribl etc.
+Now begin to build the resources including VPC, subnets, EKS, helm cribl etc.
 
 + Setup remote tfstate storage
 ```shell
@@ -166,6 +166,7 @@ terraform apply -target=module.helmcribl
 
 occasionally error, try re-running with terraform plan
 terraform apply           several times to get it working
+
 ![Screenshot](screenshots/20230911165407.png)
 
 
@@ -190,11 +191,13 @@ kubernetes   ClusterIP   172.20.0.1   <none>        443/TCP   2d2h
 ```
 
 + see the cribl logstream leader is running
+External kubernetes LoadBalancer port and URL addresses are shown
 
 
+![Screenshot](screenshots/20230911142521.png)
 
 
-+ cloudwatch loggrup is capturing the billy-eks cluster audit log
++ cloudwatch loggroup is capturing the billy-eks cluster audit log
 
 ![Screenshot](screenshots/20230911145954.png)
 
@@ -203,10 +206,10 @@ kubernetes   ClusterIP   172.20.0.1   <none>        443/TCP   2d2h
 
 run
 ```
-terraform destroy
+terraform destroy --auto-approve
 ```
-click `yes` to continue
 
-If some resources can't be destroyed, just delete them manually
+
+If some resources can't be destroyed, like EKS cluster, eks-role, just delete them manually from AWS console > EKS and IAM role
 
 And then go to s3 bucket to delete the tfstate file before getting stucked at re-running "terraform plan" again.
