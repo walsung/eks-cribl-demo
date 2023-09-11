@@ -47,6 +47,14 @@ module "EKS" {
 }
 
 
+# resource "null_resource" "delay" {
+#   provisioner "local-exec" {
+#     command = "sleep 60"  # Delay for 60 seconds
+#   }
+
+#   depends_on = [module.EKS]
+# }
+
 module "helmcribl" {
   source                         = "../../module/helmcribl"
   eks_cluster_endpoint           = module.EKS.endpoint
@@ -58,7 +66,6 @@ module "helmcribl" {
   chartversion                   = local.chartversion
   repository                     = local.repository
   config_token                   = local.config_token
-  depends_on = [module.EKS]
 }
 
 # module "jumpserver" {

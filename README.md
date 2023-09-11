@@ -1,20 +1,102 @@
-## Infrastructure
+## about DEMO
 
-The purpose of this project is to help you build your infrastructure in your [aws account](https://aws.amazon.com/).
+This demo is to build an AWS EKS and then joins the helm chart kube-config setting to EKS, finally install cribl leader via Helm Chart.
+Due to the scary cpu/ram utilization of cribl, the EKS nodes are built with c7g.4xlarge ec2 instance. 
+![[Pasted image 20230911145215.png]]
+
+
+## Original Design
+
+- jumphost can be either built on EC2 or ECS, but both are incomplete
+- eks role and nodegroup_role have these permissions
+- Cribl logstream leader helm setup is the declarative command for the imperative command `helm --create-namespace -n "cribl" install logstream-leader cribl/logstream-leader --set config.adminPassword="criblleader" --set "config.groups={group1,group2}" --set config.token="ABCDEF01-1234-5678-ABCD-ABCDEF012345" --set config.host="localhost"`
+
+	
+AmazonEC2FullAccess
+	
+AmazonEKS_CNI_Policy
+	
+AmazonEKSClusterPolicy
+	
+AmazonEKSFargatePodExecutionRolePolicy
+	
+AmazonEKSLocalOutpostClusterPolicy
+	
+AmazonEKSServicePolicy
+	
+AmazonEKSVPCResourceController
+	
+AmazonEKSWorkerNodePolicy
+	
+AWSFaultInjectionSimulatorEKSAccess
+
+
+
+![[Pasted image 20230911175828.png]]
+
+
+folder tree
+```
+.
+├── module
+│   ├── eks
+│   │   ├── locals.tf
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── helmcribl
+│   │   ├── locals.tf
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   ├── providers.tf
+│   │   ├── templates
+│   │   └── variables.tf
+│   └── networking
+│       ├── locals.tf
+│       ├── main.tf
+│       ├── outputs.tf
+│       └── variables.tf
+├── README.md
+├── region
+│   └── virginia
+│       ├── locals.tf
+│       ├── main.tf
+│       ├── outputs.tf
+│       ├── providers.tf
+│       └── variables.tf
+└── setup
+    ├── locals.tf
+    ├── main.tf
+    ├── outputs.tf
+    ├── providers.tf
+    └── variables.tf
+```
 
 ## Prerequisites
 
 + Create an [aws account](https://aws.amazon.com/) with the IAM `AdministratorAccess` permission
-+ Install and configure [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-+ Install and configure [terraform](https://www.terraform.io/downloads)
 
-## How to work
++ Configure Access Key and Secret Access Key
 
-There are two steps to help you create your infrastructure as follows:
+**NOTE**: You **MUST** use the Access Key and Secret Access Key of user that created EKS
+
+```shell
+$ aws configure
+AWS Access Key ID [*******************]: 
+AWS Secret Access Key [*********************]: 
+Default region name [us-east-1]: 
+Default output format [json]
+```
+
+
+
+
+## Install 
 
 ### Setup environment
 
-Terraform saves all changes in `*.tfstate` file, so we'd better store `*.tfstate` in `aws s3 bucket` instead of local machine. This step will build a `aws s3 bucket` to store `*.tfstate` file.
+Terraform saves all changes in `*.tfstate` file, so we'd better store `*.tfstate` in `aws s3 bucket` instead of local machine. 
+Go to `cd setup` folder, build a `aws s3 bucket` to store `*.tfstate` file.
 
 + Init Terraform
 
@@ -28,7 +110,7 @@ $ terraform init
 $ terraform apply
 ```
 
-You will be prompted to enter an `aws region code`, such as `us-east-1`. After that, you need to make sure the listed resources that will be crated and then enter `yes`
+Enter an `aws region code`, such as `us-east-1`. After that, you need to make sure the listed resources that will be crated and then enter `yes`
 
 You can see the output `s3_bucket_terraform_state` below
 ```shell
@@ -39,9 +121,9 @@ s3_bucket_terraform_state = "**********-us-east-1"
 
 ### Build resources
 
-Now, we begin to build the resources including VPC, subnets, EKS, Jump server etc.
+Now, we begin to build the resources including VPC, subnets, EKS, helm cribl etc.
 
-+ Setup remote backup
++ Setup remote tfstate storage
 ```shell
 $ cd ../region/virginia 
 ```
@@ -61,6 +143,9 @@ The following things maybe need to be modified:
 3. Update `region` as the region code that you entered when creating s3 bucket above
 4. Set `encrypt` as `true`
 
+
+
+
 + Create resources
 
 You can modify the configuration in the `main.tf` file according to your needs, and then run the following commands
@@ -71,42 +156,22 @@ $ terraform apply
 
 You will be prompted to enter `yes` after confirmed the listed resources.
 
-## How to verify
 
-Now, all the resources have been built, The next step is to how to verify them.
+It may show up error that module.helmcribl will be provisioned before EKS creation. This cannot be bypassed with depends_on command due to module.helmcribl works with its own providers.tf.
 
-We can use `Jump Server` to test if they work well. We just need to verify EKS because it depends on VPC and subnets.
 
-+ Login Jump Server
+terraform plan -target=module.helmcribl
+terraform apply -target=module.helmcribl
 
-We can use `Session Manager` to login `Jump Server`, and then setups the environment
-```shell
-$ sudo -s
-```
-+ Configure Access Key and Secret Access Key
+occasionally error, try re-running with terraform plan
+terraform apply           several times to get it working
+![[Pasted image 20230911165407.png]]
 
-**NOTE**: You **MUST** use the Access Key and Secret Access Key of user that created EKS
 
-```shell
-$ aws configure
-AWS Access Key ID [*******************]: 
-AWS Secret Access Key [*********************]: 
-Default region name [us-east-1]: 
-Default output format [json]
-```
 
-You can check it
 
-```shell
-$ aws sts get-caller-identity
-{
-    "Account": "***********",
-    "UserId": "**********************",
-    "Arn": "arn:aws:iam::***********:user/****"
-}
-```
 
-+ Update or create kubeconfig
++ Update or create kubeconfig in AWS CloudShell
 
 ```shell
 $ aws eks --region region-code update-kubeconfig --name cluster_name
@@ -122,3 +187,23 @@ $ kubectl get svc
 NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
 kubernetes   ClusterIP   172.20.0.1   <none>        443/TCP   2d2h
 ```
+
++ see the cribl logstream leader is running
+
+
+
+
++ cloudwatch loggrup is capturing the billy-eks cluster audit log
+
+![[Pasted image 20230911145954.png]]
+
+
+## Uninstall
+
+run
+```
+terraform destroy
+```
+click `yes` to continue
+
+If some resources can't be built, just delete them manually

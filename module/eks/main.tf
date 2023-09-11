@@ -207,5 +207,5 @@ resource "aws_eks_node_group" "node_group" {
     "eks/nodegroup-type" = "managed"
   }, local.tags)
 
-  depends_on = [aws_eks_cluster.eks]
+  # depends_on = [aws_eks_cluster.eks]
 }

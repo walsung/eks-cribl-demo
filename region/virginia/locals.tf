@@ -16,7 +16,7 @@ locals {
   desired_size      = 2
   max_size          = 2
   min_size          = 2
-  ec2_instance_type = "c7g.4xlarge"    # normal t3.micro, but for cribl, needs at least c7g.4xlarge
+  ec2_instance_type = "m5a.4xlarge"    # normal t3.micro, but for cribl, needs big CPU/RAM
   #tags               = local.eks_tags
 
   ## module helm cribl

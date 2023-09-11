@@ -1,6 +1,6 @@
 
 
-resource "kubernetes_namespace" "app-namespace" {
+resource "kubernetes_namespace" "app_namespace" {
   metadata {
     name = local.namespace
   }
@@ -29,22 +29,10 @@ resource "helm_release" "logstream-leader" {
     value = "logstream-leader-internal"
   }
 
-  ## redis
-  #   set {
-  #   name  = "cluster.enabled"
-  #   value = "true"
-  # }
+  set {
+    name  = "config.adminPassword"
+    value = "criblleader"
+  }
 
-  # set {
-  #   name  = "metrics.enabled"
-  #   value = "true"
-  # }
-
-  # set {
-  #   name  = "service.annotations.prometheus\\.io/port"
-  #   value = "9127"
-  #   type  = "string"
-  # }
-
-  depends_on = [kubernetes_namespace.app-namespace]
+  # depends_on = [kubernetes_namespace.app_namespace]
 }
