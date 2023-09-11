@@ -85,7 +85,7 @@ provider "helm" {
 resource "helm_release" "logstream-leader" {
   (....snippet...)
 
-  timeout = 3600            # 1 hour = 3600 seconds
+  timeout = 1200            # 20 minutes = 1200 seconds
   cleanup_on_fail = true    # to delete the deployment when fail to create
 
   (....snippet...)
