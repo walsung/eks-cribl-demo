@@ -205,7 +205,7 @@ resource "aws_eks_node_group" "node_group" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false
   }
 
   tags = merge({
