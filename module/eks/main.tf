@@ -90,6 +90,10 @@ resource "aws_eks_cluster" "eks" {
     delete = "20m"
   }
 
+  lifecycle {
+    create_before_destroy = false    ## originally true
+  }
+
   vpc_config {
     endpoint_private_access = true
     endpoint_public_access  = true
