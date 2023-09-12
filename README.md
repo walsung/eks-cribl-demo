@@ -26,9 +26,9 @@ AmazonEKSWorkerNodePolicy
 - node group role have these permissions
 ```
 CloudWatchFullAccess
+CloudWatchAgentServerPolicy
 AmazonEKSWorkerNodePolicy
 AmazonEKS_CNI_Policy
-CloudWatchAgentServerPolicy
 AmazonEC2RoleforSSM (service-role)
 AmazonEC2FullAccess
 AmazonEC2ContainerRegistryReadOnly
