@@ -30,6 +30,6 @@ locals {
   tags = {
     "Environment" : "Development"
     "Project" : "EKSInfrastructure"
-  }1111111j
+  }
 
 }
