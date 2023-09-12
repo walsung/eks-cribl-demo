@@ -16,21 +16,33 @@ This demo is to build an AWS EKS and then joins the helm chart kube-config setti
 - eks cluster role has these permissions
 
 CloudWatchFullAccess
+
 AmazonEKSClusterPolicy
+
 AmazonEKSVPCResourceController
+
 AmazonEC2ContainerRegistryReadOnly
+
 AmazonEKSWorkerNodePolicy
 
 - node group role have these permissions
 
 CloudWatchFullAccess
+
 AmazonEKSWorkerNodePolicy
+
 AmazonEKS_CNI_Policy
+
 CloudWatchAgentServerPolicy
+
 AmazonEC2RoleforSSM (service-role)
+
 AmazonEC2FullAccess
+
 AmazonEC2ContainerRegistryReadOnly
+
 AmazonSSMFullAccess
+
 AmazonEBSCSIDriverPolicy (service-role)
 
 - enable EKS control plane logs like these, viewable from cloudwatch loggroup
