@@ -7,7 +7,7 @@ This demo is to build an AWS EKS and then joins the helm chart kube-config setti
 
 ## Design
 
-![Screenshot](screenshots/20230911175828.png)
+![Screenshot](screenshots/architecture.png)
 
 
 - all input variables are declared under folder region/xxxx/locals.tf and partially in main.tf for the module outputs
